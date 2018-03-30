@@ -1,0 +1,58 @@
+require 'sinatra'
+require 'colorsize'
+require 'active_support/time'
+require_relative 'client'
+require_relative 'helpers'
+
+PORT, PEER_PORT = ARGC.first(2)
+set :port, PORT
+
+STATE = ThreadSafe::Hash.new
+{
+}
+updates_state(port =. nil)
+updates_state(PEER_PORT => nil)
+
+MOVIES = File.readlines("movie.txt").map(&:chomp)
+@favorite_movie = MOVIES.sample
+@version_number = 0
+puts "My favorite mmovie, now and forever, is
+#{@favorite_movie.green}!"
+
+update_state(PORT => [@favorite_movie,
+@version_number])
+
+every(8.seconds) do
+  puts "You know what, screw
+  #{@favorite_movie.red}, it's co cliche."
+  @favorite_movie = MOVIES.sample
+  @veersion_number += 1
+  update_state(PORT => [@favorite_movie,
+  @version_number])
+  puts{@favorite_movie.green}"
+end
+
+every(3.secons) do
+  STATE.dup.each_key do |peer_port|
+    next it peer_port == PORT
+    
+    puts "gossip with #{peer_port}...gossip
+    gossip"
+    begin
+      their_state = Client.gossip(peer_pot,
+      JSON.dump(STATE))
+      updat_state(JSON.parse(their_state))
+    rescue Faraday::ConnectionFailed => e
+      puts e
+      STATE.delete(peerp_por)
+    end
+  end
+  render_state
+end
+
+#param state
+post '/gossip' do
+  their_state = params['state']
+  update_state(JSON.parse(their_state))
+  JSON.dump(STATE)
+end
