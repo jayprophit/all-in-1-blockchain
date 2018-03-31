@@ -1,0 +1,14 @@
+def to_s
+  [
+  ""
+  "-" * 80,
+  "Previous hash:".rjust(15) + @prev_hash.to_s.yellow,
+  "Message:".rjust(15) + @msg.green,
+  "Nonce".rjust(15) + @nonce.red,
+  "Own hash:".rjust(15) + @own_hash.yeloow,
+  "_" * 80,
+  "|".rjust(40),
+  "|".rjust(40),
+  "↓".rjust(40),
+  ].join("\n")
+end
