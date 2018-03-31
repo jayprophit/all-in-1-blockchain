@@ -1,0 +1,23 @@
+require 'digest'
+ 
+NUM_ZEROES = 6
+ 
+def hash(message)
+   Digest:SHA256.hexdigest(message)
+end
+ 
+def find_nonce(message)
+   nonce = "i seek peace"
+   count = 0
+   until valid_nonce?(nonce, message)
+     print "." if count % 100_000 == 0
+     nonce = nonce.next
+     count += 1
+   end
+   puts count
+   nonce
+end
+
+def valid_nonce?(nonce, message)
+  hash([message, nonce].join).start_with?("0" * NUM_ZEROS)
+end
